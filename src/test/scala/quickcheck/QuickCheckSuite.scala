@@ -15,14 +15,14 @@ class QuickCheckSuite extends munit.FunSuite:
 
     check(asProp(p))(identity) match
       case r: Result => r.status match
-        case _: Failed         => () // OK: scalacheck found a counter example!
-        case p: PropException  => p.e match
+        case _: Failed => () // OK: scalacheck found a counter example!
+        case p: PropException => p.e match
           case e: NoSuchElementException => () // OK: the implementation throws NSEE
           case _ => fail
         case _ => fail
 
   /** Turns a `Properties` instance into a single `Prop` by combining all the properties */
-  def asProp(properties: Properties): Prop = Prop.all(properties.properties.map(_._2).toSeq*)
+  def asProp(properties: Properties): Prop = Prop.all(properties.properties.map(_._2).toSeq *)
 
   test("Binomial heap satisfies properties. (5pts)") {
     assert(
@@ -51,4 +51,5 @@ class QuickCheckSuite extends munit.FunSuite:
   }
 
   import scala.concurrent.duration.*
+
   override val munitTimeout = 10.seconds
