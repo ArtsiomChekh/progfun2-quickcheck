@@ -47,6 +47,19 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap:
     list == list.sorted
   }
 
+  property("contains inserted element") = forAll { (a: Int, h: H) =>
+    val newHeap = insert(a, h)
+
+    @tailrec
+    def contains(remaining: H): Boolean = remaining match {
+      case Nil => false
+      case h :: _ if findMin(remaining) == a => true
+      case _ :: tail => contains(deleteMin(remaining))
+    }
+
+    contains(newHeap)
+  }
+
   property("minimumOfOneOrTheOtherHeaps") = forAll { (h1: H, h2: H) =>
     if isEmpty(h1) && isEmpty(h2) then
       isEmpty(meld(h1, h2))
@@ -61,4 +74,12 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap:
       val minMeldH = findMin(meldH)
       minMeldH == minH1 || minMeldH == minH2
   }
+
+
+
+
+
+
+
+
 
