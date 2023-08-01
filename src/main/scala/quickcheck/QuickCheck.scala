@@ -51,11 +51,10 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap:
     val newHeap = insert(a, h)
 
     @tailrec
-    def contains(remaining: H): Boolean = remaining match {
+    def contains(remaining: H): Boolean = remaining match
       case Nil => false
       case h :: _ if findMin(remaining) == a => true
       case _ :: tail => contains(deleteMin(remaining))
-    }
 
     contains(newHeap)
   }
