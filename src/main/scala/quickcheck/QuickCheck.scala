@@ -42,13 +42,13 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap:
 
   property("sorted sequence of elements when continually finding and deleting minima") = forAll { (h: H) =>
     @tailrec
-    def remainingMin(remaining: H, deleteList: List[Int]): List[Int] = remaining match
-      case h if h == empty => Nil
+    def remainingMin(remainingHeap: H, deleteList: List[Int]): List[Int] = remainingHeap match
+      case remaining if remaining == empty => deleteList
       case _ =>
-        val min = findMin(remaining)
-        remainingMin(deleteMin(remaining), min :: deleteList)
+        val min = findMin(remainingHeap)
+        remainingMin(deleteMin(remainingHeap), min :: deleteList)
 
-    val list = remainingMin(h, Nil)
+    val list = remainingMin(h, Nil).reverse
     list == list.sorted
   }
 
