@@ -13,7 +13,7 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap:
     const(empty),
     for {
       v <- arbitrary[Int]
-      h <- oneOf(const(empty), genHeap)
+      h <- genHeap
     } yield insert(v, h)
   )
 
