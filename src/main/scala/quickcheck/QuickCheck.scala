@@ -40,28 +40,25 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap:
     isEmpty(deleteMin(h))
   }
 
-  property("sorted sequence of elements when continually finding and deleting minima") = forAll { (h: H) =>
+  private def extractHeapElements(h: H): List[A] =
     @tailrec
-    def remainingMin(remainingHeap: H, deleteList: List[Int]): List[Int] = remainingHeap match
-      case remaining if remaining == empty => deleteList
+    def remaining(remainingElements: H, deleteList: List[A]): List[A] = remainingElements match
+      case remainingElements if remainingElements == empty => deleteList
       case _ =>
-        val min = findMin(remainingHeap)
-        remainingMin(deleteMin(remainingHeap), min :: deleteList)
+        val min = findMin(remainingElements)
+        remaining(deleteMin(remainingElements), min :: deleteList)
 
-    val list = remainingMin(h, Nil).reverse
+    remaining(h, Nil).reverse
+
+  property("sorted sequence of elements when continually finding and deleting minima") = forAll { (h: H) =>
+    val list = extractHeapElements(h)
     list == list.sorted
   }
 
   property("contains inserted element") = forAll { (a: Int, h: H) =>
     val newHeap = insert(a, h)
-
-    @tailrec
-    def contains(remaining: H): Boolean = remaining match
-      case Nil => false
-      case h :: _ if findMin(remaining) == a => true
-      case _ :: tail => contains(deleteMin(remaining))
-
-    contains(newHeap)
+    val list = extractHeapElements(newHeap)
+    list.contains(a)
   }
 
   property("minimum of one or the other heaps") = forAll { (h1: H, h2: H) =>
