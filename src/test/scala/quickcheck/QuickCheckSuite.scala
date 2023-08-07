@@ -50,6 +50,22 @@ class QuickCheckSuite extends munit.FunSuite:
     checkBogus(new QuickCheckHeap with quickcheck.test.Bogus5BinomialHeap)
   }
 
+  import QuickCheckBinomialHeap.*
+
+  test("extract elements: empty") {
+    assertEquals(extractElements(empty), List())
+  }
+
+  test("extract elements: one element") {
+    val heap: H = insert(10, empty)
+    assertEquals(extractElements(heap), List(10))
+  }
+
+  test("extract elements: more than one elements") {
+    val heap: H = insert(1, insert(2, insert(10, empty)))
+    assertEquals(extractElements(heap), List(1, 2, 10))
+  }
+
   import scala.concurrent.duration.*
 
   override val munitTimeout = 10.seconds

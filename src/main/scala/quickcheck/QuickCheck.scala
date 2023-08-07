@@ -9,7 +9,7 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 
 abstract class QuickCheckHeap extends Properties("Heap") with IntHeap:
-  lazy val genHeap: Gen[H] = oneOf(
+  private lazy val genHeap: Gen[H] = oneOf(
     const(empty),
     for {
       v <- arbitrary[Int]
@@ -40,24 +40,25 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap:
     isEmpty(deleteMin(h))
   }
 
-  private def extractHeapElements(h: H): List[A] =
+  def extractElements(heap: H): List[A] =
     @tailrec
-    def loop(remaining: H, deleteList: List[A]): List[A] = remaining match
-      case remainingElements if remainingElements == empty => deleteList
-      case _ =>
+    def loop(remaining: H, deleteList: List[A]): List[A] =
+      if isEmpty(remaining) then
+        deleteList
+      else
         val min = findMin(remaining)
         loop(deleteMin(remaining), min :: deleteList)
 
-    loop(h, Nil).reverse
+    loop(heap, Nil).reverse
 
   property("sorted sequence of elements when continually finding and deleting minima") = forAll { (h: H) =>
-    val list = extractHeapElements(h)
+    val list = extractElements(h)
     list == list.sorted
   }
 
   property("contains inserted element") = forAll { (a: Int, h: H) =>
     val newHeap = insert(a, h)
-    val list = extractHeapElements(newHeap)
+    val list = extractElements(newHeap)
     list.contains(a)
   }
 
