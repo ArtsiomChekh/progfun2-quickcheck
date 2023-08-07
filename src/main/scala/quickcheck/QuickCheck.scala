@@ -49,7 +49,7 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap:
         val min = findMin(remaining)
         loop(deleteMin(remaining), min :: deleteList)
 
-    loop(heap, Nil).reverse
+    loop(heap, List()).reverse
 
   property("sorted sequence of elements when continually finding and deleting minima") = forAll { (h: H) =>
     val list = extractElements(h)
