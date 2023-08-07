@@ -42,13 +42,13 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap:
 
   private def extractHeapElements(h: H): List[A] =
     @tailrec
-    def remaining(remainingElements: H, deleteList: List[A]): List[A] = remainingElements match
+    def loop(remaining: H, deleteList: List[A]): List[A] = remaining match
       case remainingElements if remainingElements == empty => deleteList
       case _ =>
-        val min = findMin(remainingElements)
-        remaining(deleteMin(remainingElements), min :: deleteList)
+        val min = findMin(remaining)
+        loop(deleteMin(remaining), min :: deleteList)
 
-    remaining(h, Nil).reverse
+    loop(h, Nil).reverse
 
   property("sorted sequence of elements when continually finding and deleting minima") = forAll { (h: H) =>
     val list = extractHeapElements(h)
