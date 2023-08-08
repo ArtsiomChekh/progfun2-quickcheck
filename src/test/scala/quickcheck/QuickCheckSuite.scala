@@ -66,6 +66,11 @@ class QuickCheckSuite extends munit.FunSuite:
     assertEquals(extractElements(heap), List(1, 2, 10))
   }
 
+  test("extract elements: more than one elements order") {
+    val heap: H = insert(1, insert(10, insert(2, empty)))
+    assertEquals(extractElements(heap), List(1, 2, 10))
+  }
+
   import scala.concurrent.duration.*
 
   override val munitTimeout = 10.seconds
